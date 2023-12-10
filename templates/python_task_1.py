@@ -34,19 +34,37 @@ car_matrix = generate_car_matrix(df)
 print(car_matrix)
 
 
-def get_type_count(df)->dict:
-    """
-    Categorizes 'car' values into types and returns a dictionary of counts.
+import pandas as pd
 
-    Args:
-        df (pandas.DataFrame)
+def get_type_count(df: pd.DataFrame) -> dict:
+  """
+  Categorizes 'car' values into types and returns a dictionary of counts.
 
-    Returns:
-        dict: A dictionary with car types as keys and their counts as values.
-    """
-    # Write your logic here
+  Args:
+      df (pandas.DataFrame)
 
-    return dict()
+  Returns:
+      dict: A dictionary with car types as keys and their counts as values.
+  """
+  # Add a new categorical column 'car_type' based on values of the column 'car'
+  df['car_type'] = pd.cut(df['car'], bins=[0, 15, 25, df['car'].max() + 1], labels=['low', 'medium', 'high'])
+
+  # Calculate the count of occurrences for each 'car_type' category
+  type_count = df['car_type'].value_counts().to_dict()
+
+  # Sort the dictionary alphabetically based on keys
+  type_count = dict(sorted(type_count.items()))
+
+  return type_count
+
+# Read the CSV file from the URL
+url = 'https://raw.githubusercontent.com/mapup/MapUp-Data-Assessment-F/main/datasets/dataset-1.csv'
+df = pd.read_csv(url)
+
+# Call the function
+type_count = get_type_count(df)
+print(type_count)
+
 
 
 def get_bus_indexes(df)->list:
