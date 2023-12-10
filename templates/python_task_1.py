@@ -34,7 +34,6 @@ car_matrix = generate_car_matrix(df)
 print(car_matrix)
 
 
-import pandas as pd
 
 def get_type_count(df: pd.DataFrame) -> dict:
   """
@@ -67,49 +66,89 @@ print(type_count)
 
 
 
-def get_bus_indexes(df)->list:
-    """
-    Returns the indexes where the 'bus' values are greater than twice the mean.
+def get_bus_indexes(df: pd.DataFrame) -> list:
+ """
+ Returns the indexes where the 'bus' values are greater than twice the mean value of the bus column in the DataFrame.
 
-    Args:
-        df (pandas.DataFrame)
+ Args:
+     df (pandas.DataFrame)
 
-    Returns:
-        list: List of indexes where 'bus' values exceed twice the mean.
-    """
-    # Write your logic here
+ Returns:
+     list: List of indexes where 'bus' values exceed twice the mean.
+ """
+ # Identify the indices where the 'bus' values are greater than twice the mean value of the 'bus' column
+ bus_indices = df[df['bus'] > 2 * df['bus'].mean()].index.tolist()
 
-    return list()
+ # Sort the list in ascending order
+ bus_indices.sort()
 
+ return bus_indices
 
-def filter_routes(df)->list:
-    """
-    Filters and returns routes with average 'truck' values greater than 7.
+# Read the CSV file from the URL
+url = 'https://raw.githubusercontent.com/mapup/MapUp-Data-Assessment-F/main/datasets/dataset-1.csv'
+df = pd.read_csv(url)
 
-    Args:
-        df (pandas.DataFrame)
-
-    Returns:
-        list: List of route names with average 'truck' values greater than 7.
-    """
-    # Write your logic here
-
-    return list()
+# Call the function
+bus_indices = get_bus_indexes(df)
+print(bus_indices)
 
 
-def multiply_matrix(matrix)->pd.DataFrame:
-    """
-    Multiplies matrix values with custom conditions.
+def filter_routes(df: pd.DataFrame) -> list:
+ """
+ Filters and returns routes with average 'truck' values greater than 7.
 
-    Args:
-        matrix (pandas.DataFrame)
+ Args:
+    df (pandas.DataFrame)
 
-    Returns:
-        pandas.DataFrame: Modified matrix with values multiplied based on custom conditions.
-    """
-    # Write your logic here
+ Returns:
+    list: List of route names with average 'truck' values greater than 7.
+ """
+ # Filter routes with average 'truck' values greater than 7
+ filtered_routes = df.groupby('route')['truck'].mean().loc[lambda x: x > 7].index.tolist()
 
-    return matrix
+ # Sort the list in ascending order
+ filtered_routes.sort()
+
+ return filtered_routes
+
+# Read the CSV file from the URL
+url = 'https://raw.githubusercontent.com/mapup/MapUp-Data-Assessment-F/main/datasets/dataset-1.csv'
+df = pd.read_csv(url)
+
+# Call the function
+filtered_routes = filter_routes(df)
+print(filtered_routes)
+
+
+import numpy as np
+
+def multiply_matrix(matrix: pd.DataFrame) -> pd.DataFrame:
+ """
+ Multiplies matrix values with custom conditions.
+
+ Args:
+    matrix (pandas.DataFrame)
+
+ Returns:
+    pandas.DataFrame: Modified matrix with values multiplied based on custom conditions.
+ """
+ # If a value in the DataFrame is greater than 20, multiply those values by 0.75
+ # If a value is 20 or less, multiply those values by 1.25
+ matrix = matrix.applymap(lambda x: x * 0.75 if x > 20 else x * 1.25)
+
+ # Round the values to 1 decimal place
+ matrix = matrix.round(1)
+
+ return matrix
+
+# Read the CSV file from the URL
+url = 'https://raw.githubusercontent.com/mapup/MapUp-Data-Assessment-F/main/datasets/dataset-1.csv'
+df = pd.read_csv(url)
+
+# Call the function
+car_matrix = generate_car_matrix(df)
+multiplied_matrix = multiply_matrix(car_matrix)
+print(multiplied_matrix)
 
 
 def time_check(df)->pd.Series:
